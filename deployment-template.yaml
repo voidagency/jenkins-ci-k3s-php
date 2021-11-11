@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-php-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: test-php
+  ports:
+    - port: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: test-php
+  name: test-php
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-php
+  template:
+    metadata:
+      labels:
+        app: test-php
+    spec:
+      containers:
+        - image: vactory/php-fpm-nginx:1.0.1
+          name: test-php
+          ports:
+            - containerPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-php-http
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  rules:
+    - host: test-php.k8s.lapreprod.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: test-php-svc
+                port:
+                  number: 8080
