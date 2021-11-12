@@ -37,7 +37,6 @@ metadata:
   name: __JOB_NAME__-http
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
-    traefik.ingress.kubernetes.io/router.middlewares: kube-system-redirectscheme@kubernetescrd
 spec:
   rules:
     - host: __SUB_DOMAIN__.k8s.lapreprod.com
@@ -50,24 +49,3 @@ spec:
                 name: __JOB_NAME__-svc
                 port:
                   number: 8080
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: __JOB_NAME__-https
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.tls.certresolver: le
-spec:
-  rules:
-    - host: __SUB_DOMAIN__.k8s.lapreprod.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: __JOB_NAME__-svc
-                port:
-                  number: 80
