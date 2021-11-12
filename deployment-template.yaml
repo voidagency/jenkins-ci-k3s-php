@@ -37,6 +37,7 @@ metadata:
   name: test-php-http
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.middlewares: kube-system-redirectscheme@kubernetescrd
 spec:
   rules:
     - host: test-php.k8s.lapreprod.com
